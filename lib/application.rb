@@ -9,8 +9,9 @@ class Application
     output.prints('> Hi, mate! Welcome to my vending machine!')
     output.prints
     print_available_coins_info
-    output.prints
     start_selling_session
+    output.prints('>' * 10)
+    output.prints('> Bye, mate! Don\'t forget to visit me soon')
   end
 
   private
@@ -26,9 +27,20 @@ class Application
   end
 
   def start_selling_session
-    print_products
-    output.prints
-    input.prompt('> What would you like to purchase?')
+    loop do
+      output.prints
+      print_products
+      output.prints
+      product_id = input.prompt('> What would you like to purchase?')
+      break if cancel_action?(product_id)
+
+      product = vending_machine.product_by_id(product_id)
+      if product
+        begin_purchase(Purchase.new(product))
+      else
+        output.prints("\nSorry, I don't have a product associated with your request: #{product_id}\n")
+      end
+    end
   end
 
   def print_products
@@ -37,5 +49,13 @@ class Application
     products_presenters.each do |product_presenter|
       output.prints(product_presenter.to_string_row)
     end
+  end
+
+  def begin_purchase(purchase)
+    output.prints("The purchase has been started...")
+  end
+
+  def cancel_action?(input_text)
+    input_text.match?(/^cancel|exit$/)
   end
 end

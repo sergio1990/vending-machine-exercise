@@ -7,4 +7,10 @@ class VendingMachine
     @products = products
     @available_coins = available_coins
   end
+
+  def product_by_id(product_id)
+    products.find do |product|
+      product.id == product_id.to_i
+    end
+  end
 end
