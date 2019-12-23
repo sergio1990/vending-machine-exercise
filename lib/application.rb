@@ -1,4 +1,6 @@
 class Application
+  include Helpers::HumanPriceHelper
+
   def initialize(vending_machine, input, output)
     @vending_machine = vending_machine
     @input = input
@@ -57,5 +59,15 @@ class Application
 
   def begin_purchase(purchase)
     output.prints("\n> Your've chosen the product '#{purchase.product_name}'...")
+    until purchase.enough_coins_to_buy? do
+      coin_code = input.prompt("> Insert the coin (#{human_price(purchase.waiting_amount)}): ")
+      coin = vending_machine.coin_by_code(coin_code)
+      if coin
+        purchase.add_coin(coin)
+      else
+        output.prints("> Sorry, I don't know the coin '#{coin_code}'. Please, try again another one.")
+      end
+    end
+    output.prints("\nThank you for your choice! bon appétit!")
   end
 end
