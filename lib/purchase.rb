@@ -28,6 +28,10 @@ class Purchase
     coins_sum > product.price
   end
 
+  def change_amount
+    coins_sum - product.price
+  end
+
   private
 
   attr_reader :product, :coins

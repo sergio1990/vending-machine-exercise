@@ -48,7 +48,7 @@ class Application
 
   def print_coins_in_bank_info
     output.prints("> I have the following coins in my bank:")
-    vending_machine.available_coins.group_by { |coin| coin.code }.each do |code, items|
+    vending_machine.available_coins.group_by(&:code).each do |code, items|
       amount = items.size
       output.prints("#{amount}x ".rjust(5) + code.rjust(5))
     end
@@ -76,6 +76,15 @@ class Application
         rescue VendingMachine::InvalidCoinError => e
           output.prints("\n> #{e.message}\n")
         end
+      end
+    end
+
+    if vending_machine.need_to_get_change?(purchase_id)
+      output.prints("\n> Please, take your change:")
+      change_result = vending_machine.request_change(purchase_id)
+      change_result.coins.group_by(&:code).each do |code, items|
+        amount = items.size
+        output.prints("#{amount}x ".rjust(5) + code.rjust(5))
       end
     end
 

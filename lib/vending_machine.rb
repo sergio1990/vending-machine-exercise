@@ -42,6 +42,11 @@ class VendingMachine
     purchase.waiting_amount
   end
 
+  def need_to_get_change?(purchase_id)
+    purchase = purchases.fetch(purchase_id)
+    purchase.need_to_get_change?
+  end
+
   def insert_coin(coin_code, purchase_id)
     purchase = purchases.fetch(purchase_id)
     return false if purchase.enough_coins_to_buy?
@@ -54,6 +59,13 @@ class VendingMachine
     raise InvalidCoinError, e.message
   end
 
+  def request_change(purchase_id)
+    purchase = purchases.fetch(purchase_id)
+    change_result = ChangeCalculator.new(purchase.change_amount, available_coins.dup).calculate
+    change_result.coins.each { |c| remove_coin(c) }
+    change_result
+  end
+
   private
 
   attr_reader :coin_factory, :purchases
@@ -62,5 +74,10 @@ class VendingMachine
     assortment.find do |product_item|
       product_item.product_id == product_id.to_i
     end
+  end
+
+  def remove_coin(coin)
+    index = available_coins.index { |c| c.value == coin.value }
+    available_coins.delete_at(index)
   end
 end
