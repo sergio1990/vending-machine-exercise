@@ -67,18 +67,22 @@ class Application
 
   def pay_for_purchase(purchase_id)
     output.prints("\n> It's time to pay! Please, insert coins in total amount of #{human_price(vending_machine.waiting_amount(purchase_id))}")
-    # Catch the case when the product is free
-    unless vending_machine.enough_coins?(purchase_id)
-      loop do
-        coin_code = input.prompt("> Insert the coin (#{human_price(vending_machine.waiting_amount(purchase_id))} left): ")
-        begin
-          break unless vending_machine.insert_coin(coin_code, purchase_id)
-        rescue VendingMachine::InvalidCoinError => e
-          output.prints("\n> #{e.message}\n")
-        end
+    request_for_coins(purchase_id) unless vending_machine.enough_coins?(purchase_id)
+    complete_purchase(purchase_id)
+  end
+
+  def request_for_coins(purchase_id)
+    loop do
+      coin_code = input.prompt("> Insert the coin (#{human_price(vending_machine.waiting_amount(purchase_id))} left): ")
+      begin
+        break unless vending_machine.insert_coin(coin_code, purchase_id)
+      rescue VendingMachine::InvalidCoinError => e
+        output.prints("\n> #{e.message}\n")
       end
     end
+  end
 
+  def complete_purchase(purchase_id)
     if vending_machine.need_to_get_change?(purchase_id)
       output.prints("\n> Please, take your change:")
       change_result = vending_machine.request_change(purchase_id)
