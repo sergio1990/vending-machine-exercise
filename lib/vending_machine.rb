@@ -13,4 +13,10 @@ class VendingMachine
       product.id == product_id.to_i
     end
   end
+
+  def coin_by_code(coin_code)
+    available_coins.find do |coin|
+      coin.code == coin_code
+    end
+  end
 end

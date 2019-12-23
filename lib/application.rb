@@ -38,24 +38,24 @@ class Application
       if product
         begin_purchase(Purchase.new(product))
       else
-        output.prints("\nSorry, I don't have a product associated with your request: #{product_id}\n")
+        output.prints("\n> Sorry, I don't have a product associated with your request: #{product_id}\n")
       end
     end
   end
 
   def print_products
-    output.prints("That's what I have for you:")
+    output.prints("> That's what I have for you:")
     products_presenters = vending_machine.products.map { |p| ProductPresenter.new(p) }
     products_presenters.each do |product_presenter|
       output.prints(product_presenter.to_string_row)
     end
   end
 
-  def begin_purchase(purchase)
-    output.prints("The purchase has been started...")
-  end
-
   def cancel_action?(input_text)
     input_text.match?(/^cancel|exit$/)
+  end
+
+  def begin_purchase(purchase)
+    output.prints("\n> Your've chosen the product '#{purchase.product_name}'...")
   end
 end
