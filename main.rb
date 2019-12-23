@@ -16,16 +16,14 @@ available_coins = SUPPORTED_COINS.keys.inject([]) do |coins, coin_code|
   coins.concat(Array.new(rand(10), coin_factory.build_by_code(coin_code)))
 end
 
-puts available_coins
-
-products = [
-  Product.new(1, 'Nachos', 200),
-  Product.new(2, 'Animal cracker', 75),
-  Product.new(3, 'Potato chips', 225)
+assortment = [
+  ProductItem.new(Product.new(1, 'Nachos', 200), rand(10)),
+  ProductItem.new(Product.new(2, 'Animal cracker', 75), rand(10)),
+  ProductItem.new(Product.new(3, 'Potato chips', 225), rand(10))
 ].freeze
 
 vending_machine = VendingMachine.new(
-  products,
+  assortment,
   available_coins,
   coin_factory
 )

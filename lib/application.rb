@@ -30,25 +30,23 @@ class Application
   def start_selling_session
     loop do
       output.prints
-      print_products
+      print_assortment
       output.prints
       product_id = input.prompt('> What would you like to purchase?')
       break if cancel_action?(product_id)
 
-      product = vending_machine.product_by_id(product_id)
-      if product
-        begin_purchase(Purchase.new(product))
-      else
-        output.prints("\n> Sorry, I don't have a product associated with your request: #{product_id}\n")
+      begin
+        purchase_id = vending_machine.purchase(product_id)
+      rescue VendingMachine::InvalidProductCodeError, VendingMachine::OutOfStockError => e
+        output.prints("\n> #{e.message}\n")
       end
     end
   end
 
-  def print_products
+  def print_assortment
     output.prints("> That's what I have for you:")
-    products_presenters = vending_machine.products.map { |p| ProductPresenter.new(p) }
-    products_presenters.each do |product_presenter|
-      output.prints(product_presenter.to_string_row)
+    vending_machine.assortment.map { |p| ProductItemPresenter.new(p) }.each do |product_item|
+      output.prints(product_item.to_string_row)
     end
   end
 
