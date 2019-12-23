@@ -34,7 +34,7 @@ class Application
       output.prints
       print_assortment
       output.prints
-      product_id = input.prompt('> What would you like to purchase?')
+      product_id = input.prompt('> What would you like to purchase? (enter `cancel` or `exit` to quit)')
       break if cancel_action?(product_id)
 
       begin
