@@ -90,6 +90,10 @@ class Application
         amount = items.size
         output.prints("#{amount}x ".rjust(5) + code.rjust(5))
       end
+      unless change_result.full_change
+        output.prints("> Please, take into account that I don't have enough coins to provide you a change.")
+        output.prints("> The amount of money which I ought you is #{human_price(change_result.change_amount)}")
+      end
     end
 
     output.prints("\nThank you for your choice! bon appétit!")
