@@ -17,6 +17,8 @@ class ProductItem
   end
 
   def substract_amount
+    return if @amount.zero?
+
     @amount -= 1
   end
 end
