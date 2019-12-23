@@ -19,21 +19,23 @@ class Application
 
   def print_available_coins_info
     output.prints("> I support the following coins:")
-    vending_machine.available_coins.each do |coin|
-      output.prints(coin.code.rjust(5))
+    coins_presenters = vending_machine.available_coins.map { |c| CoinPresenter.new(c) }
+    coins_presenters.each do |coin_presenter|
+      output.prints(coin_presenter.to_string_row)
     end
   end
 
   def start_selling_session
     print_products
     output.prints
-    output.prints('> What would you like to purchase?')
+    input.prompt('> What would you like to purchase?')
   end
 
   def print_products
     output.prints("That's what I have for you:")
-    vending_machine.products.each do |product|
-      output.prints(product.id.to_s.ljust(5) + product.name.ljust(20) + product.human_price.rjust(10))
+    products_presenters = vending_machine.products.map { |p| ProductPresenter.new(p) }
+    products_presenters.each do |product_presenter|
+      output.prints(product_presenter.to_string_row)
     end
   end
 end
