@@ -6,6 +6,7 @@ require 'securerandom'
 class VendingMachine
   InvalidProductCodeError = Class.new(::StandardError)
   OutOfStockError = Class.new(::StandardError)
+  InvalidCoinError = Class.new(::StandardError)
 
   extend Forwardable
 
@@ -31,10 +32,26 @@ class VendingMachine
     purchase_id
   end
 
-  def coin_by_code(coin_code)
-    available_coins.find do |coin|
-      coin.code == coin_code
-    end
+  def enough_coins?(purchase_id)
+    purchase = purchases.fetch(purchase_id)
+    purchase.enough_coins_to_buy?
+  end
+
+  def waiting_amount(purchase_id)
+    purchase = purchases.fetch(purchase_id)
+    purchase.waiting_amount
+  end
+
+  def insert_coin(coin_code, purchase_id)
+    purchase = purchases.fetch(purchase_id)
+    return false if purchase.enough_coins_to_buy?
+
+    coin = coin_factory.build_by_code(coin_code)
+    purchase.add_coin(coin)
+    available_coins << coin.dup
+    !purchase.enough_coins_to_buy?
+  rescue CoinFactory::UnsupportedCoinError => e
+    raise InvalidCoinError, e.message
   end
 
   private

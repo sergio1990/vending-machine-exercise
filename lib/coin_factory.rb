@@ -3,7 +3,7 @@
 require_relative './coin'
 
 class CoinFactory
-  InvalidCoinCodeError = Class.new(::StandardError)
+  UnsupportedCoinError = Class.new(::StandardError)
 
   def initialize(supported_coins)
     @supported_coins = supported_coins
@@ -17,7 +17,7 @@ class CoinFactory
     coin_value = supported_coins.fetch(coin_code)
     Coin.new(coin_code, coin_value)
   rescue KeyError
-    raise InvalidCoinCodeError, "There is no coin with the code '#{coin_code}'!"
+    raise UnsupportedCoinError, "The coin with the code '#{coin_code}' isn't supported!"
   end
 
   private

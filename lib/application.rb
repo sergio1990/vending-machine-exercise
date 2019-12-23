@@ -37,6 +37,7 @@ class Application
 
       begin
         purchase_id = vending_machine.purchase(product_id)
+        pay_for_purchase(purchase_id)
       rescue VendingMachine::InvalidProductCodeError, VendingMachine::OutOfStockError => e
         output.prints("\n> #{e.message}\n")
       end
@@ -54,15 +55,17 @@ class Application
     input_text.match?(/^cancel|exit$/)
   end
 
-  def begin_purchase(purchase)
-    output.prints("\n> Your've chosen the product '#{purchase.product_name}'...")
-    until purchase.enough_coins_to_buy? do
-      coin_code = input.prompt("> Insert the coin (#{human_price(purchase.waiting_amount)}): ")
-      coin = vending_machine.coin_by_code(coin_code)
-      if coin
-        purchase.add_coin(coin)
-      else
-        output.prints("> Sorry, I don't know the coin '#{coin_code}'. Please, try again another one.")
+  def pay_for_purchase(purchase_id)
+    output.prints("\n> It's time to pay! Please, insert coins in total amount of #{human_price(vending_machine.waiting_amount(purchase_id))}")
+    # Catch the case when the product is free
+    unless vending_machine.enough_coins?(purchase_id)
+      loop do
+        coin_code = input.prompt("> Insert the coin (#{human_price(vending_machine.waiting_amount(purchase_id))} left): ")
+        begin
+          break unless vending_machine.insert_coin(coin_code, purchase_id)
+        rescue VendingMachine::InvalidCoinError => e
+          output.prints("\n> #{e.message}\n")
+        end
       end
     end
 
