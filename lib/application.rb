@@ -10,7 +10,7 @@ class Application
   def start
     output.prints('> Hi, mate! Welcome to my vending machine!')
     output.prints
-    print_available_coins_info
+    print_supported_coins_info
     start_selling_session
     output.prints('>' * 10)
     output.prints('> Bye, mate! Don\'t forget to visit me soon')
@@ -20,11 +20,10 @@ class Application
 
   attr_reader :vending_machine, :input, :output
 
-  def print_available_coins_info
+  def print_supported_coins_info
     output.prints("> I support the following coins:")
-    coins_presenters = vending_machine.available_coins.map { |c| CoinPresenter.new(c) }
-    coins_presenters.each do |coin_presenter|
-      output.prints(coin_presenter.to_string_row)
+    vending_machine.supported_coin_codes.each do |coin_code|
+      output.prints(coin_code.rjust(5))
     end
   end
 
@@ -68,6 +67,7 @@ class Application
         output.prints("> Sorry, I don't know the coin '#{coin_code}'. Please, try again another one.")
       end
     end
+
     output.prints("\nThank you for your choice! bon appétit!")
   end
 end

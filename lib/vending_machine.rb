@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 class VendingMachine
+  extend Forwardable
+
   attr_reader :products, :available_coins
 
-  def initialize(products, available_coins)
+  def_delegator :coin_factory, :supported_coin_codes
+
+  def initialize(products, available_coins, coin_factory)
     @products = products
     @available_coins = available_coins
+    @coin_factory = coin_factory
   end
 
   def product_by_id(product_id)
@@ -19,4 +26,8 @@ class VendingMachine
       coin.code == coin_code
     end
   end
+
+  private
+
+  attr_reader :coin_factory
 end
