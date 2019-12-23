@@ -10,7 +10,7 @@ class Application
   def start
     output.prints('> Hi, mate! Welcome to my vending machine!')
     output.prints
-    print_supported_coins_info
+    print_coins_info
     start_selling_session
     output.prints('>' * 10)
     output.prints('> Bye, mate! Don\'t forget to visit me soon')
@@ -20,10 +20,15 @@ class Application
 
   attr_reader :vending_machine, :input, :output
 
-  def print_supported_coins_info
+  def print_coins_info
     output.prints("> I support the following coins:")
     vending_machine.supported_coin_codes.each do |coin_code|
       output.prints(coin_code.rjust(5))
+    end
+    output.prints("\n> I have the following coins in my bank:")
+    vending_machine.available_coins.group_by { |coin| coin.code }.each do |code, items|
+      amount = items.size
+      output.prints("#{amount}x ".rjust(5) + code.rjust(5))
     end
   end
 
