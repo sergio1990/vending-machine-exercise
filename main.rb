@@ -19,7 +19,10 @@ end
 assortment = [
   ProductItem.new(Product.new(1, 'Nachos', 200), rand(10)),
   ProductItem.new(Product.new(2, 'Animal cracker', 75), rand(10)),
-  ProductItem.new(Product.new(3, 'Potato chips', 225), rand(10))
+  ProductItem.new(Product.new(3, 'Potato chips', 225), rand(10)),
+  ProductItem.new(Product.new(4, 'Cashews', 450), rand(10)),
+  ProductItem.new(Product.new(5, 'Popcorn', 175), rand(10)),
+  ProductItem.new(Product.new(6, 'Chocolate chip cookie', 100), rand(10))
 ].freeze
 
 vending_machine = VendingMachine.new(

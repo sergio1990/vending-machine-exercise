@@ -7,6 +7,6 @@ class ProductItemPresenter < SimpleDelegator
   include Helpers::HumanPriceHelper
 
   def to_string_row
-    product_id.to_s.ljust(5) + "#{amount}x".rjust(5) + " " + product_name.ljust(20) + human_price(product_price).rjust(10)
+    product_id.to_s.ljust(5) + "#{amount}x".rjust(5) + " " + product_name.ljust(30) + human_price(product_price).rjust(10)
   end
 end
